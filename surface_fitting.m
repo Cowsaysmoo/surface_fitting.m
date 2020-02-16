@@ -2,12 +2,13 @@
 clear;clc;
 
 % Create samples
-x = linspace(-8,8,30);
-y = linspace(-8,8,30);
+x = linspace(-8,8,10);
+y = linspace(-8,8,10);
 
 [x, y] = meshgrid(x,y);
 
 z_samples = sin(sqrt(x.^2 + y.^2)) ./ sqrt(x.^2 + y.^2);
+%z_samples = sqrt(x.^2 + y.^2);
 
 % Normalize samples
 [x_n, ps_x] = mapminmax(x, 0, 1);
@@ -22,7 +23,7 @@ N = size(z_samples,1) * size(z_samples,2);
 H = 100;
 
 % Learning Rate
-eta = 0.15;
+eta = 0.08;
 
 % Initialize weights to random values between -0.01 and 0.01
 w = -0.01 + (0.01 - (-0.01)) * rand(2,H);
@@ -46,6 +47,7 @@ for iter = 1:1000
         target = z_n(selection_i, selection_j);
         
         % Calculate hidden layer output
+        sum = 0;
         for h = 1:H
             w_h = w(:,h);
             % sigmoid function
@@ -75,8 +77,8 @@ for iter = 1:1000
 end
 
 % Produce test samples
-x_test = linspace(-8,8,30);
-y_test = linspace(-8,8,30);
+x_test = linspace(-8,8,10);
+y_test = linspace(-8,8,10);
 
 [x_test,y_test] = meshgrid(x_test,y_test);
 
@@ -99,18 +101,18 @@ output = mapminmax("reverse", output_normalized, ps_z);
 % Surface plots
 figure(1);
 clf;
+subplot(1,2,1);
 surf(x_test,y_test,output);
 shading("interp");
 title("Trained NN Output");
-
-figure(2);
-clf;
+subplot(1,2,2);
 surf(x,y,z_samples);
 shading("interp");
 title("Ideal Output");
 
 % Plot error for analysis of accuracy and convergence
-figure(3);
+figure(2);
 clf;
 plot(err_history);
 title("Error over time");
+disp(min(err_history));
