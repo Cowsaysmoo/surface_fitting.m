@@ -34,7 +34,9 @@ hidden_layer = zeros(H,1);
 d_w = zeros(2,H);
 input = zeros(2,1);
 
-for iter = 1:1000
+count = 0;
+
+for iter = 1:3000
     err = 0; % initialize err to 0 for summing error
     for i = 1:N
         % Randomly select input point
@@ -70,6 +72,10 @@ for iter = 1:1000
         % Update weights
         v = v + d_v;
         w = w + d_w;
+        
+        count = count + 1;
+        v_history(count) = v(20, 1);
+        w_history(count) = w(1, 16);
     end
     % Track error for plotting
     err_history(iter) = err/(N*1.0);
@@ -116,3 +122,13 @@ clf;
 plot(err_history);
 title("Error over time");
 disp(min(err_history));
+
+% Plot weight histories of selected weights
+figure(3);
+clf;
+subplot(1,2,1);
+plot(w_history);
+title("w(1,16)");
+subplot(1,2,2);
+plot(v_history);
+title("v(20,1)");
